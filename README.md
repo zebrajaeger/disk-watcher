@@ -2,14 +2,14 @@
 
 ## Beschreibung
 
-Disk Monitor ist ein Node.js-basiertes Tool, um die Füllgrade von Laufwerken auf einem Linux-Server zu überwachen. Es prüft periodisch den Speicherverbrauch und sendet bei Grenzwertüberschreitungen Warnmeldungen per E-Mail.
+Disk Monitor ist ein Node.js-basiertes Tool, um die FÃ¼llgrade von Laufwerken auf einem Linux-Server zu Ã¼berwachen. Es prÃ¼ft periodisch den Speicherverbrauch und sendet bei GrenzwertÃ¼berschreitungen Warnmeldungen per E-Mail.
 
 ## Features
 
-- Konfigurierbare Laufwerksüberwachung (Pfad, maximale Füllung, minimaler freier Speicherplatz).
-- Flexible Prüfintervalle per Cron-Ausdruck.
-- E-Mail-Warnungen bei Grenzwertüberschreitungen.
-- Zeitstempel und Priorität im Logging.
+- Konfigurierbare LaufwerksÃ¼berwachung (Pfad, maximale FÃ¼llung, minimaler freier Speicherplatz).
+- Flexible PrÃ¼fintervalle per Cron-Ausdruck.
+- E-Mail-Warnungen bei GrenzwertÃ¼berschreitungen.
+- Zeitstempel und PrioritÃ¤t im Logging.
 - Anpassbare Konfigurations- und Logdateien per Kommandozeilenparameter.
 
 ---
@@ -27,7 +27,7 @@ Disk Monitor ist ein Node.js-basiertes Tool, um die Füllgrade von Laufwerken auf
    npm install -g .
    ```
 
-   Das Tool ist danach global verfügbar und kann über den Befehl `disk-monitor` aufgerufen werden.
+   Das Tool ist danach global verfÃ¼gbar und kann Ã¼ber den Befehl `disk-monitor` aufgerufen werden.
 
 ---
 
@@ -48,7 +48,7 @@ Beispiel:
 
 ## Konfigurationsdatei
 
-Die Konfigurationsdatei (z. B. `config.json`) enthält Einstellungen im JSON-Format.
+Die Konfigurationsdatei (z. B. `config.json`) enthÃ¤lt Einstellungen im JSON-Format.
 
 ### Beispiel `config.json`
 
@@ -79,10 +79,10 @@ Die Konfigurationsdatei (z. B. `config.json`) enthält Einstellungen im JSON-Form
 
 - ``**:**
 
-  - `laufwerkspfad`: Pfad des zu überwachenden Laufwerks.
-  - `maxFuellgrad`: Maximal erlaubter Füllstand in Prozent.
+  - `laufwerkspfad`: Pfad des zu Ã¼berwachenden Laufwerks.
+  - `maxFuellgrad`: Maximal erlaubter FÃ¼llstand in Prozent.
   - `minFreierSpeicher`: Minimal erforderlicher freier Speicherplatz (z. B. `500MB`, `10GB`).
-  - `cronIntervall`: Prüfintervall als Cron-Ausdruck.
+  - `cronIntervall`: PrÃ¼fintervall als Cron-Ausdruck.
   - `alarmIntervall`: Mindestzeit zwischen zwei E-Mail-Warnungen (z. B. `1h`, `30m`).
 
 - ``**:**
@@ -93,15 +93,15 @@ Die Konfigurationsdatei (z. B. `config.json`) enthält Einstellungen im JSON-Form
   - `username`: Benutzername (Standard: leer).
   - `password`: Passwort (Standard: leer).
   - `from`: Absender-Adresse der E-Mail.
-  - `to`: Empfänger-Adresse der E-Mail.
+  - `to`: Empfï¿½nger-Adresse der E-Mail.
 
 ---
 
 ## Logdatei
 
-Das Tool schreibt Logs mit Zeitstempel und Priorität in die angegebene Logdatei.
+Das Tool schreibt Logs mit Zeitstempel und PrioritÃ¤t in die angegebene Logdatei.
 
-### Beispiel Log-Einträge:
+### Beispiel Log-EintrÃ¤ge:
 
 ```plaintext
 [2025-01-27 15:30:00] [INFO] Starting disk monitoring...
