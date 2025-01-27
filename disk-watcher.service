@@ -1,0 +1,23 @@
+[Unit]
+Description=Disk Watcher
+
+[Service]
+ExecStart=/usr/bin/node index.js
+WorkingDirectory=/home/myUser/prj/disk-watcher
+
+# Restart service after 10 seconds if node service crashes
+RestartSec=10
+Restart=on-failure
+
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=disk-watcher
+
+User=myUser
+Group=myGroup
+
+Environment=PATH=/usr/bin:/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target
