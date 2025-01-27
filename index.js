@@ -111,9 +111,9 @@ function startMonitoring() {
     const { laufwerkspfad, maxFuellgrad, minFreierSpeicher, cronIntervall, alarmIntervall } = laufwerkConfig;
 
     let lastAlertTime = null;
-
     cron.schedule(cronIntervall, async () => {
       try {
+        log(`Check ${laufwerkspfad}`, 'DEBUG');
         const { used, freeSpace } = await checkDisk(laufwerkspfad);
 
         const minFreeBytes = parseSizeToBytes(minFreierSpeicher);
