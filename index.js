@@ -107,33 +107,42 @@ function checkDisk(laufwerk) {
 
 // Main monitoring function
 function startMonitoring() {
-  config.laufwerke.forEach((laufwerkConfig) => {
-    const { laufwerkspfad, maxFuellgrad, minFreierSpeicher, cronIntervall, alarmIntervall } = laufwerkConfig;
-
-    let lastAlertTime = null;
-    cron.schedule(cronIntervall, async () => {
-      try {
-        log(`Check ${laufwerkspfad}`, 'DEBUG');
-        const { used, freeSpace } = await checkDisk(laufwerkspfad);
-
-        const minFreeBytes = parseSizeToBytes(minFreierSpeicher);
-        if (used > maxFuellgrad || freeSpace < minFreeBytes) {
-          const now = dayjs();
-          if (!lastAlertTime || now.diff(lastAlertTime, 'millisecond') >= dayjs.duration(alarmIntervall).asMilliseconds()) {
-            const subject = `Disk Alert: ${laufwerkspfad}`;
-            const message = `Disk ${laufwerkspfad} exceeds limits:\n\n` +
-              `Max Fill Level: ${maxFuellgrad}%\nCurrent Fill Level: ${used}%\n` +
-              `Min Free Space: ${minFreierSpeicher}\nCurrent Free Space: ${(freeSpace / (1024 ** 3)).toFixed(2)} GB`;
-
-            await sendEmail(subject, message);
-            lastAlertTime = now;
-          }
-        }
-      } catch (error) {
-        log(`Error monitoring ${laufwerkspfad}: ${error}`, 'ERROR');
-      }
+  config.laufwerke.forEach(async (laufwerkConfig) => {
+    log(`Start watching '${laufwerkConfig.laufwerkspfad}'`, 'INFO');
+    let lastAlertTime = await performCheck(laufwerkConfig, null);
+    cron.schedule(laufwerkConfig.cronIntervall, async () => {
+      lastAlertTime = await performCheck(laufwerkConfig, lastAlertTime);
     });
   });
+}
+
+async function performCheck(laufwerkConfig, lastAlertTime) {
+  const { laufwerkspfad, maxFuellgrad, minFreierSpeicher, alarmIntervall } = laufwerkConfig;
+  const now = dayjs();
+  try {
+    log(`Check '${laufwerkspfad}'`, 'DEBUG');
+    const { used, freeSpace } = await checkDisk(laufwerkspfad);
+
+    const minFreeBytes = parseSizeToBytes(minFreierSpeicher);
+    if (used > maxFuellgrad || freeSpace < minFreeBytes) {
+      if (!lastAlertTime || now.diff(lastAlertTime, 'millisecond') >= dayjs.duration(alarmIntervall).asMilliseconds()) {
+        const subject = `Disk Alert: ${laufwerkspfad}`;
+        const message = `Disk ${laufwerkspfad} exceeds limits:\n\n` +
+          `Max Fill Level: ${maxFuellgrad}%\nCurrent Fill Level: ${used}%\n` +
+          `Min Free Space: ${minFreierSpeicher}\nCurrent Free Space: ${(freeSpace / (1024 ** 3)).toFixed(2)} GB`;
+
+        await sendEmail(subject, message);
+        lastAlertTime = now;
+      }
+    }
+  } catch (error) {
+    log(`Error monitoring '${laufwerkspfad}': ${error}`, 'ERROR');
+    if (!lastAlertTime || now.diff(lastAlertTime, 'millisecond') >= dayjs.duration(alarmIntervall).asMilliseconds()) {
+      sendEmail(`Error monitoring '${laufwerkspfad}'`, `${error}`)
+      lastAlertTime = now;
+    }
+  }
+  return lastAlertTime;
 }
 
 // Function to parse size strings like "10GB", "500MB" to bytes
